@@ -43,7 +43,7 @@ def evaluate(model, data_loader, forward_fn, metrics_fn, model_type, tokenizer, 
     for i, batch_data in enumerate(pbar):
         batch_seq = batch_data[-1]
         loss, batch_hyp, batch_label = forward_fn(model, batch_data, model_type=model_type, tokenizer=tokenizer, device=device, is_inference=is_test, 
-                                                      is_test=is_test, skip_special_tokens=True, beam_size=beam_size, max_seq_len=max_seq_len)
+                                                      is_test=is_test, skip_special_tokens=True beam_size=beam_size, max_seq_len=max_seq_len)
         
         # Calculate evaluation metrics
         list_hyp += batch_hyp
@@ -88,7 +88,7 @@ def train(model, train_loader, valid_loader, optimizer, forward_fn, metrics_fn, 
             if fp16:
                 with torch.cuda.amp.autocast():
                     loss, batch_hyp, batch_label = forward_fn(model, batch_data, model_type=model_type, tokenizer=tokenizer, 
-                                                device=device, skip_special_tokens=False, is_test=False)
+                                                device=device, skip_special_tokens=True, is_test=False)
                     
                 # Scales the loss, and calls backward() to create scaled gradients
                 scaler.scale(loss).backward()
@@ -106,7 +106,7 @@ def train(model, train_loader, valid_loader, optimizer, forward_fn, metrics_fn, 
                 scaler.update()                    
             else:
                 loss, batch_hyp, batch_label = forward_fn(model, batch_data, model_type=model_type, tokenizer=tokenizer, 
-                                            device=device, skip_special_tokens=False, is_test=False)
+                                            device=device, skip_special_tokens=True, is_test=False)
             
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm)
