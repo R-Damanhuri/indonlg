@@ -43,7 +43,7 @@ def evaluate(model, data_loader, forward_fn, metrics_fn, model_type, tokenizer, 
     for i, batch_data in enumerate(pbar):
         batch_seq = batch_data[-1]
         loss, batch_hyp, batch_label = forward_fn(model, batch_data, model_type=model_type, tokenizer=tokenizer, device=device, is_inference=is_test, 
-                                                      is_test=is_test, skip_special_tokens=True beam_size=beam_size, max_seq_len=max_seq_len)
+                                                      is_test=is_test, skip_special_tokens=True, beam_size=beam_size, max_seq_len=max_seq_len)
         
         # Calculate evaluation metrics
         list_hyp += batch_hyp
